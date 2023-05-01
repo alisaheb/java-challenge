@@ -1,6 +1,7 @@
 package jp.co.axa.apidemo.services;
 
 import jp.co.axa.apidemo.entities.Employee;
+import jp.co.axa.apidemo.exception.EntityNotFoundException;
 import jp.co.axa.apidemo.model.response.EmployeeResponseModel;
 import jp.co.axa.apidemo.repositories.EmployeeRepository;
 import org.slf4j.Logger;
@@ -25,6 +26,10 @@ public class EmployeeServiceImpl implements EmployeeService{
     public List<EmployeeResponseModel> retrieveEmployees() {
         try {
             List<Employee> employees = employeeRepository.findAll();
+            if(employees.isEmpty()){
+                throw new EntityNotFoundException();
+            }
+
             List<EmployeeResponseModel> employeeResponseModels = employees.stream().map(employee -> {
                 EmployeeResponseModel employeeResponseModel = new EmployeeResponseModel();
                 employeeResponseModel.setName(employee.getName());
@@ -43,11 +48,15 @@ public class EmployeeServiceImpl implements EmployeeService{
     public EmployeeResponseModel getEmployee(Long employeeId) {
         try {
             Optional<Employee> optEmp = employeeRepository.findById(employeeId);
-            EmployeeResponseModel employeeResponseModel = new EmployeeResponseModel();
-            employeeResponseModel.setName(optEmp.get().getName());
-            employeeResponseModel.setSalary(optEmp.get().getSalary());
-            employeeResponseModel.setDepartment(optEmp.get().getDepartment());
-            return employeeResponseModel;
+            if (optEmp.isPresent()) {
+                EmployeeResponseModel employeeResponseModel = new EmployeeResponseModel();
+                employeeResponseModel.setName(optEmp.get().getName());
+                employeeResponseModel.setSalary(optEmp.get().getSalary());
+                employeeResponseModel.setDepartment(optEmp.get().getDepartment());
+                return employeeResponseModel;
+            } else {
+                throw new EntityNotFoundException();
+            }
         }catch (Exception databaseException){
             log.info("Check the database connections.");
             log.error(databaseException.toString());
@@ -56,14 +65,33 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     public void saveEmployee(Employee employee){
-        employeeRepository.save(employee);
+        try {
+            employeeRepository.save(employee);
+        }catch (Exception databaseException){
+            log.info("Check the database connections.");
+            log.error(databaseException.toString());
+            throw databaseException;
+        }
     }
 
     public void deleteEmployee(Long employeeId){
-        employeeRepository.deleteById(employeeId);
+        try {
+            employeeRepository.deleteById(employeeId);
+        }catch (Exception databaseException){
+            log.info("Check the database connections.");
+            log.error(databaseException.toString());
+            throw databaseException;
+        }
     }
 
     public void updateEmployee(Employee employee) {
-        employeeRepository.save(employee);
+        try {
+            employeeRepository.save(employee);
+        }catch (Exception databaseException){
+            log.info("Check the database connections.");
+            log.error(databaseException.toString());
+            throw databaseException;
+        }
+
     }
 }
