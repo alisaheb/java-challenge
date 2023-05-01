@@ -1,8 +1,11 @@
 package jp.co.axa.apidemo.controllers;
 
 import jp.co.axa.apidemo.entities.Employee;
+import jp.co.axa.apidemo.model.response.EmployeeResponseModel;
 import jp.co.axa.apidemo.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,25 +14,24 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class EmployeeController {
 
-    @Autowired
     private EmployeeService employeeService;
 
-    public void setEmployeeService(EmployeeService employeeService) {
+    public void EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("/employees")
-    public List<Employee> getEmployees() {
-        List<Employee> employees = employeeService.retrieveEmployees();
-        return employees;
+    @GetMapping(value = "/employees", produces = "application/json")
+    public ResponseEntity<Object> getEmployees() {
+        List<EmployeeResponseModel> employees = employeeService.retrieveEmployees();
+        return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
     @GetMapping("/employees/{employeeId}")
-    public Employee getEmployee(@PathVariable(name="employeeId")Long employeeId) {
-        return employeeService.getEmployee(employeeId);
+    public ResponseEntity<Object> getEmployee(@PathVariable(name="employeeId")Long employeeId) {
+        return new ResponseEntity<>(employeeService.getEmployee(employeeId),HttpStatus.OK);
     }
 
-    @PostMapping("/employees")
+    @PostMapping(value = "/employees", produces = "application/json")
     public void saveEmployee(Employee employee){
         employeeService.saveEmployee(employee);
         System.out.println("Employee Saved Successfully");

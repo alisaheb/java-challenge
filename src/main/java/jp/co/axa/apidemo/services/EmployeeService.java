@@ -1,14 +1,15 @@
 package jp.co.axa.apidemo.services;
 
 import jp.co.axa.apidemo.entities.Employee;
+import jp.co.axa.apidemo.model.response.EmployeeResponseModel;
 
 import java.util.List;
 
 public interface EmployeeService {
 
-    public List<Employee> retrieveEmployees();
+    public List<EmployeeResponseModel> retrieveEmployees();
 
-    public Employee getEmployee(Long employeeId);
+    public EmployeeResponseModel getEmployee(Long employeeId);
 
     public void saveEmployee(Employee employee);
 
