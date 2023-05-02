@@ -1,6 +1,8 @@
 package jp.co.axa.apidemo.controllers;
 
 import jp.co.axa.apidemo.entities.Employee;
+import jp.co.axa.apidemo.exception.EntityNotFoundException;
+import jp.co.axa.apidemo.model.request.EmployeeRequestModel;
 import jp.co.axa.apidemo.model.response.EmployeeResponseModel;
 import jp.co.axa.apidemo.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
 public class EmployeeController {
-
+    @Autowired
     private EmployeeService employeeService;
 
     public void EmployeeController(EmployeeService employeeService) {
@@ -23,12 +26,20 @@ public class EmployeeController {
     @GetMapping(value = "/employees", produces = "application/json")
     public ResponseEntity<Object> getEmployees() {
         List<EmployeeResponseModel> employees = employeeService.retrieveEmployees();
+        if(employees.isEmpty()){
+            throw new EntityNotFoundException();
+        }
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
     @GetMapping("/employees/{employeeId}")
     public ResponseEntity<Object> getEmployee(@PathVariable(name="employeeId")Long employeeId) {
-        return new ResponseEntity<>(employeeService.getEmployee(employeeId),HttpStatus.OK);
+        Optional<EmployeeResponseModel> employee = employeeService.getEmployee(employeeId);
+        if(employee.isPresent()){
+            return new ResponseEntity<>(employee.get(), HttpStatus.OK);
+        }else {
+            throw new EntityNotFoundException();
+        }
     }
 
     @PostMapping(value = "/employees", produces = "application/json")
@@ -44,13 +55,14 @@ public class EmployeeController {
     }
 
     @PutMapping("/employees/{employeeId}")
-    public void updateEmployee(@RequestBody Employee employee,
+    public void updateEmployee(@RequestBody EmployeeRequestModel employeeRequestModel,
                                @PathVariable(name="employeeId")Long employeeId){
-        Employee emp = employeeService.getEmployee(employeeId);
-        if(emp != null){
-            employeeService.updateEmployee(employee);
+        Optional<EmployeeResponseModel> employee = employeeService.getEmployee(employeeId);
+        if(employee.isPresent()){
+            employeeService.updateEmployee(employeeRequestModel,employeeId);
+        }else {
+            throw new EntityNotFoundException();
         }
-
     }
 
 }
