@@ -1,7 +1,7 @@
 package jp.co.axa.apidemo.exception;
 
 import jp.co.axa.apidemo.enums.ErrorCodeEnum;
-import jp.co.axa.apidemo.model.response.ApiHeaderModel;
+import jp.co.axa.apidemo.model.response.ApiExceptionModel;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -19,22 +19,32 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        ApiHeaderModel apiHeaderModel = new ApiHeaderModel();
-        apiHeaderModel.setErrorCode(ErrorCodeEnum.REQUEST_PARAMETER_ERROR_CODE.getErrorCode());
-        apiHeaderModel.setErrorMessage(ErrorCodeEnum.REQUEST_PARAMETER_ERROR_CODE.getErrorMessage());
-        return new ResponseEntity<>(apiHeaderModel, HttpStatus.BAD_REQUEST);
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel();
+        apiExceptionModel.setErrorCode(ErrorCodeEnum.REQUEST_PARAMETER_ERROR_CODE.getErrorCode());
+        apiExceptionModel.setErrorMessage(ErrorCodeEnum.REQUEST_PARAMETER_ERROR_CODE.getErrorMessage());
+        return new ResponseEntity<>(apiExceptionModel, HttpStatus.BAD_REQUEST);
     }
+
     protected ResponseEntity<Object> handleServletRequestBindingException(ServletRequestBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        ApiHeaderModel apiHeaderModel = new ApiHeaderModel();
-        apiHeaderModel.setErrorCode(ErrorCodeEnum.REQUEST_PARAMETER_ERROR_CODE.getErrorCode());
-        apiHeaderModel.setErrorMessage(ErrorCodeEnum.REQUEST_PARAMETER_ERROR_CODE.getErrorMessage());
-        return new ResponseEntity<>(apiHeaderModel, HttpStatus.BAD_REQUEST);
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel();
+        apiExceptionModel.setErrorCode(ErrorCodeEnum.REQUEST_PARAMETER_ERROR_CODE.getErrorCode());
+        apiExceptionModel.setErrorMessage(ErrorCodeEnum.REQUEST_PARAMETER_ERROR_CODE.getErrorMessage());
+        return new ResponseEntity<>(apiExceptionModel, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(value = EntityNotFoundException.class)
     public ResponseEntity<Object> apiEntityNotFoundExceptionHandler(){
-        ApiHeaderModel apiHeaderModel = new ApiHeaderModel();
-        apiHeaderModel.setErrorCode(ErrorCodeEnum.REQUEST_ENTITY_NOT_FOUND.getErrorCode());
-        apiHeaderModel.setErrorMessage(ErrorCodeEnum.REQUEST_ENTITY_NOT_FOUND.getErrorMessage());
-        return new ResponseEntity<>(apiHeaderModel, HttpStatus.NOT_FOUND);
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel();
+        apiExceptionModel.setErrorCode(ErrorCodeEnum.REQUEST_ENTITY_NOT_FOUND.getErrorCode());
+        apiExceptionModel.setErrorMessage(ErrorCodeEnum.REQUEST_ENTITY_NOT_FOUND.getErrorMessage());
+        return new ResponseEntity<>(apiExceptionModel, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = RequestInvalidParameterException.class)
+    public ResponseEntity<Object> apiRequestParameterCustomExceptionHandler(){
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel();
+        apiExceptionModel.setErrorCode(ErrorCodeEnum.REQUEST_PARAMETER_ERROR_CODE.getErrorCode());
+        apiExceptionModel.setErrorMessage(ErrorCodeEnum.REQUEST_PARAMETER_ERROR_CODE.getErrorMessage());
+        return new ResponseEntity<>(apiExceptionModel, HttpStatus.BAD_REQUEST);
     }
 }

@@ -5,7 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ApiHeaderModel {
+public class ApiExceptionModel {
+
     private String errorCode;
     private String errorMessage;
 }

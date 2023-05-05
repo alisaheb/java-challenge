@@ -1,10 +1,11 @@
 package jp.co.axa.apidemo.controllers;
 
-import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.exception.EntityNotFoundException;
+import jp.co.axa.apidemo.exception.RequestInvalidParameterException;
 import jp.co.axa.apidemo.model.request.EmployeeRequestModel;
 import jp.co.axa.apidemo.model.response.EmployeeResponseModel;
 import jp.co.axa.apidemo.services.EmployeeService;
+import jp.co.axa.apidemo.services.RequestParameterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,13 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    public void EmployeeController(EmployeeService employeeService) {
+    @Autowired
+    private RequestParameterService requestParameterService;
+
+    public void EmployeeController(EmployeeService employeeService, RequestParameterService requestParameterService)
+    {
         this.employeeService = employeeService;
+        this.requestParameterService = requestParameterService;
     }
 
     @GetMapping(value = "/employees", produces = "application/json")
@@ -32,9 +38,13 @@ public class EmployeeController {
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
-    @GetMapping("/employees/{employeeId}")
-    public ResponseEntity<Object> getEmployee(@PathVariable(name="employeeId")Long employeeId) {
-        Optional<EmployeeResponseModel> employee = employeeService.getEmployee(employeeId);
+    @GetMapping(value = "/employees/{employeeId}", produces = "application/json")
+    public ResponseEntity<Object> getEmployee(@PathVariable(name="employeeId") String employeeId) {
+        if(!requestParameterService.isIdValid(employeeId)){
+            throw new RequestInvalidParameterException();
+        }
+        Long id = requestParameterService.extractId(employeeId);
+        Optional<EmployeeResponseModel> employee = employeeService.getEmployee(id);
         if(employee.isPresent()){
             return new ResponseEntity<>(employee.get(), HttpStatus.OK);
         }else {
@@ -43,26 +53,38 @@ public class EmployeeController {
     }
 
     @PostMapping(value = "/employees", produces = "application/json")
-    public void saveEmployee(Employee employee){
-        employeeService.saveEmployee(employee);
-        System.out.println("Employee Saved Successfully");
+    public ResponseEntity<Object> saveEmployee(@RequestBody EmployeeRequestModel employeeRequestModel){
+        if(!requestParameterService.isEmployeeRequestModelValid(employeeRequestModel)){
+            throw new RequestInvalidParameterException();
+        }
+        return new ResponseEntity<>(employeeService.saveEmployee(employeeRequestModel), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/employees/{employeeId}")
-    public void deleteEmployee(@PathVariable(name="employeeId")Long employeeId){
-        employeeService.deleteEmployee(employeeId);
-        System.out.println("Employee Deleted Successfully");
-    }
-
-    @PutMapping("/employees/{employeeId}")
-    public void updateEmployee(@RequestBody EmployeeRequestModel employeeRequestModel,
-                               @PathVariable(name="employeeId")Long employeeId){
+    @DeleteMapping(value = "/employees/{employeeId}", produces = "application/json")
+    public ResponseEntity<Object> deleteEmployee(@PathVariable(name="employeeId")Long employeeId){
         Optional<EmployeeResponseModel> employee = employeeService.getEmployee(employeeId);
         if(employee.isPresent()){
-            employeeService.updateEmployee(employeeRequestModel,employeeId);
+            return new ResponseEntity<>(employeeService.deleteEmployee(employeeId), HttpStatus.OK);
         }else {
             throw new EntityNotFoundException();
         }
     }
 
+    @PutMapping(value = "/employees/{employeeId}", produces = "application/json")
+    public ResponseEntity<Object> updateEmployee(@RequestBody EmployeeRequestModel employeeRequestModel,
+                               @PathVariable(name="employeeId") String employeeId){
+        if(!requestParameterService.isIdValid(employeeId)){
+            throw new RequestInvalidParameterException();
+        }
+        if(!requestParameterService.isEmployeeRequestModelValid(employeeRequestModel)){
+            throw new RequestInvalidParameterException();
+        }
+        Long id = requestParameterService.extractId(employeeId);
+        Optional<EmployeeResponseModel> employee = employeeService.getEmployee(id);
+        if(employee.isPresent()){
+            return new ResponseEntity<>(employeeService.updateEmployee(employeeRequestModel,id), HttpStatus.OK);
+        }else {
+            throw new EntityNotFoundException();
+        }
+    }
 }

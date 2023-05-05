@@ -1,7 +1,7 @@
 package jp.co.axa.apidemo.services;
 
-import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.model.request.EmployeeRequestModel;
+import jp.co.axa.apidemo.model.response.ApiResponseModel;
 import jp.co.axa.apidemo.model.response.EmployeeResponseModel;
 
 import java.util.List;
@@ -13,9 +13,9 @@ public interface EmployeeService {
 
     public Optional<EmployeeResponseModel> getEmployee(Long employeeId);
 
-    public void saveEmployee(Employee employee);
+    public ApiResponseModel saveEmployee(EmployeeRequestModel employeeRequestModel);
 
-    public void deleteEmployee(Long employeeId);
+    public ApiResponseModel deleteEmployee(Long employeeId);
 
-    public void updateEmployee(EmployeeRequestModel employeeRequestModel, Long employeeId);
+    public ApiResponseModel updateEmployee(EmployeeRequestModel employeeRequestModel, Long employeeId);
 }
