@@ -61,7 +61,7 @@ public class EmployeeServiceImpl implements EmployeeService{
             }
         }catch (Exception databaseException){
             log.info("Check the database connections.");
-            log.error(databaseException.toString());
+            log.error(databaseException.getMessage());
             throw databaseException;
         }
     }
@@ -80,7 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService{
             return apiResponseModel;
         }catch (Exception databaseException){
             log.info("Check the database connections.");
-            log.error(databaseException.toString());
+            log.error(databaseException.getMessage());
             throw databaseException;
         }
     }
@@ -95,7 +95,7 @@ public class EmployeeServiceImpl implements EmployeeService{
             return apiResponseModel;
         }catch (Exception databaseException){
             log.info("Check the database connections.");
-            log.error(databaseException.toString());
+            log.error(databaseException.getMessage());
             throw databaseException;
         }
     }
@@ -114,7 +114,7 @@ public class EmployeeServiceImpl implements EmployeeService{
             return apiResponseModel;
         }catch (Exception databaseException){
             log.info("Check the database connections.");
-            log.error(databaseException.toString());
+            log.error(databaseException.getMessage());
             throw databaseException;
         }
     }
