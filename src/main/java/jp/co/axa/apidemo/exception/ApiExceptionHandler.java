@@ -47,4 +47,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         apiExceptionModel.setErrorMessage(ErrorCodeEnum.REQUEST_PARAMETER_ERROR_CODE.getErrorMessage());
         return new ResponseEntity<>(apiExceptionModel, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = UnexpectedErrorException.class)
+    public ResponseEntity<Object> apiUnexpectedExceptionHandler(){
+        ApiExceptionModel apiExceptionModel = new ApiExceptionModel();
+        apiExceptionModel.setErrorCode(ErrorCodeEnum.UNEXPECTED_ERROR_EXCEPTION.getErrorCode());
+        apiExceptionModel.setErrorMessage(ErrorCodeEnum.UNEXPECTED_ERROR_EXCEPTION.getErrorMessage());
+        return new ResponseEntity<>(apiExceptionModel, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

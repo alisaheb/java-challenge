@@ -1,6 +1,7 @@
 package jp.co.axa.apidemo.services;
 
 import jp.co.axa.apidemo.entities.Employee;
+import jp.co.axa.apidemo.exception.UnexpectedErrorException;
 import jp.co.axa.apidemo.model.request.EmployeeRequestModel;
 import jp.co.axa.apidemo.model.response.ApiResponseModel;
 import jp.co.axa.apidemo.model.response.EmployeeResponseModel;
@@ -21,7 +22,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     public Logger log = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
-    public void EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
 
@@ -41,7 +42,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         }catch (Exception databaseException){
             log.info("Check the database connections.");
             log.error(databaseException.toString());
-            throw databaseException;
+            throw new UnexpectedErrorException();
         }
     }
 
@@ -62,7 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         }catch (Exception databaseException){
             log.info("Check the database connections.");
             log.error(databaseException.getMessage());
-            throw databaseException;
+            throw new UnexpectedErrorException();
         }
     }
 
@@ -81,7 +82,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         }catch (Exception databaseException){
             log.info("Check the database connections.");
             log.error(databaseException.getMessage());
-            throw databaseException;
+            throw new UnexpectedErrorException();
         }
     }
 
@@ -96,7 +97,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         }catch (Exception databaseException){
             log.info("Check the database connections.");
             log.error(databaseException.getMessage());
-            throw databaseException;
+            throw new UnexpectedErrorException();
         }
     }
 
@@ -115,7 +116,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         }catch (Exception databaseException){
             log.info("Check the database connections.");
             log.error(databaseException.getMessage());
-            throw databaseException;
+            throw new UnexpectedErrorException();
         }
     }
 }
