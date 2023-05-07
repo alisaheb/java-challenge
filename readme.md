@@ -50,3 +50,27 @@ Please let us know more about your Java experience in a few sentences. For examp
 - I have 3 years experience in Java and I started to use Spring Boot from last year
 - I'm a beginner and just recently learned Spring Boot
 - I know Spring Boot very well and have been using it for many years
+
+#### What I did with this project
+- I added model class for incoming request and response the request because don't want to expose the entity to the client.
+- For global exception handling add @ControllerAdvice into the project.
+- Add enums to avoid redundancy.
+- Add incoming request validator for validate the incoming request.
+- For validating I use java bean validation.
+- Add unite test for every method.
+- For testing I used Spock framework and Groovy because I found it is very handy tools for UT.
+- Fix the code bug.
+- Configure the Swagger and some metadata for Swagger documentation.
+
+#### What if I had time I wish to do with this project.
+- Add spring security with JWT token.
+- Add pagination on employees endpoint.
+- Add more test case.
+- Add a Message broker
+
+#### My java development journey
+- I started writing code using java back in 2012 for my university project.
+- I have been working using spring boot more than 4 years.
+- Using Spring Boot I developed several projects which now on production and can serve millions users.
+- I have experience on Spring Batch more than two years.
+- Using Spring Batch I developed several projects.
